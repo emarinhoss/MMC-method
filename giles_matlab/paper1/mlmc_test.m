@@ -6,7 +6,7 @@
 
 function mlmc_test
 
-close all; clear all;
+close all; clear all; clc;
 
 global option
 
@@ -32,7 +32,7 @@ for option = 1:5
   end
 
   M = 4;
-  randn('state',0);
+  randn('state',0);  
 
 %
 % first, convergence tests
