@@ -1,4 +1,4 @@
-function vals = MMC_exp(M,l,N,T,y0)
+function sums = MMC_exp(M,l,N,T,y0,k1,k2)
 
 nf = M^l;
 nc = nf/M;
@@ -6,30 +6,31 @@ nc = nf/M;
 hf = T/nf;
 hc = T/nc;
 
-vals(1:2) = 0;
+sums(1:4) = 0;
+for N1 = 1:1e5:N
+    N2 = min(1e5,N-N1+1);
+    dWf = k1 + k2*randn(1,N2);
 
-for N1 = 1:10000:N
-    
-    N2 = min(10000,N-N1+1);
-        
-    hl = y0*ones(1,N2);
-    hlm1 = hl;
-    
-    
+    Xf = y0*ones(1,N2);
+    Xc = Xf;
+
     if l==0
-      k = randn(1,N2);
-      hl  = hl - hf*(k.*hl);
+      Xf  = Xf + hf * (Xf.*dWf);
     else
       for n = 1:nc
         for m = 1:M
-          k = randn(1,N2);
-          hl  = hl - hf*(k.*hl);
+          Xf  = Xf + hf * (Xf.*dWf);
         end
-        k = randn(1,N2);
-        hlm1 = hlm1 - hc*(k.*hlm1);
+        Xc = Xc + hc * (Xc.*dWf);
       end
     end
-end
 
-vals(1) = sum(hl-hlm1);
-vals(2) = sum((hl-hlm1).*(hl-hlm1));
+  if l==0
+    Xc=0;
+  end
+
+  sums(1) = sums(1) + sum(Xf-Xc);
+  sums(2) = sums(2) + sum((Xf-Xc).*(Xf-Xc));
+  sums(3) = sums(3) + sum(Xf);
+  sums(4) = sums(4) + sum(Xf.*Xf);
+end
