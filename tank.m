@@ -1,11 +1,20 @@
-clear all; close all; clc;
+%TANK  Deterministic solution of the tank-filling problem with ode45.
+%
+%   Solves  dh/dt = 10 + gamma*sin(t) - beta*sqrt(h),  h(0) = h0,
+%   for fixed gamma and beta and plots h(t).  Useful as a reference for
+%   the forward Euler solutions in DTANKFILL.
+%
+%   See also TANKFILL, DTANKFILL, MLMC_TANK.
 
-tspan = [0 30];
+clear; close all; clc;
 
-gamma=4;
-beta=2;
+tspan = [0 30];     % time interval
+gamma = 4;          % amplitude of the periodic inflow
+beta  = 2;          % outflow coefficient
+h0    = 1;          % initial height
 
-h0 = 1;
+[t, h] = ode45(@(t,h) tankfill(t, h, gamma, beta), tspan, h0);
 
-[t,h] = ode45('tankfill',tspan,h0,[],gamma,beta);
-plot(t,h)
+plot(t, h)
+xlabel('t'); ylabel('h(t)'); grid on
+title(sprintf('Tank filling, \\gamma = %g, \\beta = %g (ode45)', gamma, beta))
