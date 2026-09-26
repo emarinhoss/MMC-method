@@ -1,0 +1,8 @@
+# MATLAB autosave / editor backups
+*.asv
+*.m~
+*~
+
+# Octave workspace and crash dumps
+octave-workspace
+octave-core
